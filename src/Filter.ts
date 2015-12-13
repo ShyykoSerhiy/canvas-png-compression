@@ -275,7 +275,6 @@ export function filter(imageData: ImageData): Uint8Array {
             }
         }
         var filter = FILTER_TYPES[filterType];
-        console.log(filterType);
         filtered[filterTypePos] = filter.type;//we need to write one additional byte with filter value each in row at the beginning
         filter.filter(data, fromPos, byteWidth, filtered, filterTypePos + 1, bpp);
         filterTypePos += (byteWidth + 1);
