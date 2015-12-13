@@ -6,7 +6,13 @@
     <title>Title</title>
     <script src="../dist/bundle.js"></script>
     <script>
-        'use strict';        
+        'use strict';
+        var strategies = ['DEFAULT_STRATEGY    ',
+            'FILTERED            ',
+            'HUFFMAN_ONLY        ',
+            'RLE                 ',
+            'FIXED               '
+        ];
         function toDataURL(c, prefix, additionalText) {
             var quality = document.querySelector('#quality').value;
             var start = new Date();
@@ -25,8 +31,13 @@
         }
         
         function convert(){
+            var strategy = parseInt(document.querySelector('#strategy').value, 10);
+            document.querySelector('#strategySpan').innerHTML = `${strategies[strategy]}`;
+
             var c = document.querySelector('#canvas');
-            CanvasPngCompression.replaceToDataURL();                 
+            CanvasPngCompression.replaceToDataURL({
+                strategy:strategy
+            });
             toDataURL(c, '', 'With canvas-png-compression');
             CanvasPngCompression.revertToDataURL();
             toDataURL(c, 'orig', 'Without canvas-png-compression');
@@ -35,7 +46,8 @@
 </head>
 
 <body>
-    <input id="quality" onchange="convert();" style="width:750px;" type="range" min="0" max="1" value="1" step="0.1" />
+    <span><input id="quality" onchange="convert();" style="width:750px;" type="range" min="0" max="1" value="1" step="0.1" /> Quality</span>
+    <span><input id="strategy" onchange="convert();" style="width:750px;" type="range" min="0" max="4" value="3" step="1" /> <span id="strategySpan">Strategy</span></span>
     <div id="weight">Weight : </div>
     <div id="timeTaken">Time taken : </div>
     <div id="origweight">Weight : </div>
