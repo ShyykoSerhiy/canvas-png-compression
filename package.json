@@ -1,6 +1,6 @@
 {
   "name": "canvas-png-compression",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Shim for HTMLCanvasElement.toDataURL() to include compression for png image format.",
   "main": "dist/bundle.js",
   "scripts": {

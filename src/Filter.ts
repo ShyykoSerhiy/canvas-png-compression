@@ -270,7 +270,7 @@ export function filter(imageData: ImageData): Uint8Array {
         for (var j = 1; j < FILTER_TYPES.length; j++) {// starting from 1 to skip no filter
             var sum = FILTER_TYPES[j].sum(data, fromPos, byteWidth, bpp);
             if (sum < filterSumMin) {
-                sum = filterSumMin;
+                filterSumMin = sum;
                 filterType = j;
             }
         }

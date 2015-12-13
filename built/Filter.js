@@ -244,7 +244,7 @@ export function filter(imageData) {
         for (var j = 1; j < FILTER_TYPES.length; j++) {
             var sum = FILTER_TYPES[j].sum(data, fromPos, byteWidth, bpp);
             if (sum < filterSumMin) {
-                sum = filterSumMin;
+                filterSumMin = sum;
                 filterType = j;
             }
         }
