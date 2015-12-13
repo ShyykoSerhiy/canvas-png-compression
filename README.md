@@ -66,24 +66,14 @@ CanvasPngCompression.replaceToDataURL({
         */
     strategy: 3
 });
-```js
- 
- 
-```TypeScript
-interface PakoOptions {
-    level?: number,
-    windowBits?: number,
-    chunkSize?: number,
-    strategy?: number
-}
 ```
-
 
 # Acnowledgments 
 I've got my inspiration from:
  * very well written [tiny-png-output-c](http://www.nayuki.io/page/tiny-png-output-c) by @nayuki
  * and [https://github.com/lukeapage/pngjs](https://github.com/lukeapage/pngjs) by @lukeapage
 
-
-
+# Connected issues
 https://code.google.com/p/chromium/issues/detail?id=179289
+
+[MIT License](http://opensource.org/licenses/mit-license.php).
