@@ -7,7 +7,8 @@ import {Base64Writer} from './Base64Writer';
     window.CanvasPngCompression = {
         Base64Writer: Base64Writer,
         PngWriter: PngWriter,
-        replaceToDataURL: () => {
+        replaceToDataURL: (options: PakoOptions) => {
+            options = options || {};
             /**
              * Returns the content of the current canvas as an image that you can use as a source for another canvas or an HTML element.
              * @param type The standard MIME type for the image format to return. If you do not specify this parameter, the default value is a PNG format image.
@@ -23,7 +24,7 @@ import {Base64Writer} from './Base64Writer';
 
                     return new Base64Writer().bytesToBase64(
                         'data:image/png;base64,',
-                        new PngWriter().write(ctx.getImageData(0, 0, me.width, me.height), { level: level })
+                        new PngWriter().write(ctx.getImageData(0, 0, me.width, me.height), Object.assign({}, options, { level: level }))
                     );
                 }
                 return toDataURLOld.apply(this, arguments);

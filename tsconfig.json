@@ -15,6 +15,7 @@
   "files": [
     "./src/PngWriter.ts",
     "./src/Base64Writer.ts",
+    "./src/Filter.ts",
     "./src/main.ts"
   ]
 }

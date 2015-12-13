@@ -1,6 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 import * as pako from 'pako';
 import * as crc32 from 'pako/lib/zlib/crc32';
+import {filter} from './Filter';
 
 export class PngWriter {
     static PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -8,18 +9,18 @@ export class PngWriter {
     static TYPE_IEND = 0x49454e44;
     static TYPE_IDAT = 0x49444154;
 
-    write(imageData: ImageData, options?: { level?: number, windowBits?: number, chunkSize?: number, strategy?: number }) {
+    write(imageData: ImageData, options?: PakoOptions) {
         options = options || {};
         var parts: Uint8Array[] = [];
         parts.push(new Uint8Array(PngWriter.PNG_SIGNATURE));
         parts.push(this.writeIHDRChunk(imageData.width, imageData.height));
-        var filtered = this._filterData(imageData);
+        var filtered = filter(imageData);//this._filterData(imageData);
         var compressed = pako.deflate(filtered, Object.assign({
             /**
              * //compression level 0-9
              * #define Z_NO_COMPRESSION         0
                #define Z_BEST_SPEED             1
-               #define Z_BEST_COMPRESSION       9     
+               #define Z_BEST_COMPRESSION       9
              */
             level: 0,
             /**
@@ -30,7 +31,7 @@ export class PngWriter {
             /**
              * - chunk size used for deflating data chunks, this should be power of 2 and must not be less than 256 and more than 32*1024
              */
-            chunkSize: 32*1024,
+            chunkSize: 32 * 1024,
             /**
              * var Z_FILTERED            = 1;
                var Z_HUFFMAN_ONLY        = 2;
@@ -63,32 +64,34 @@ export class PngWriter {
         var ihdr = new Uint8Array(13);
         PngWriter._writeAsBigEndian(ihdr, width, 0);
         PngWriter._writeAsBigEndian(ihdr, height, 4);
-        ihdr[8] = 8;  // Bit depth: 8 bits per sample
-        ihdr[9] = 6;  // Color type: 6 = RGBA 
+        ihdr[8] = 8;  // Bit depth: 8 bits per sample //todo add this as option maybe (need to recalculate bpp for this)
+        ihdr[9] = 6;  // Color type: 6 = RGBA // todo add this as option maybe (need to recalculate bpp for this)
         ihdr[10] = 0;  // Compression method: DEFLATE (pako comes handy)
         ihdr[11] = 0;  // Filter method: Adaptive
         ihdr[12] = 0;  // Interlace method: None
 
         return this._writeChunk(PngWriter.TYPE_IHDR, ihdr);
     }
-    
+
     /**
      * Creates IDAT chunk.
      */
     private writeIDATChunk(data: Uint8Array): Uint8Array {
         return this._writeChunk(PngWriter.TYPE_IDAT, data);
-    } 
-    
+    }
+
     /**
      * Creates IEND chunk.
      */
     private writeIENDChunk(): Uint8Array {
         return this._writeChunk(PngWriter.TYPE_IEND, null);
     }
-       
-    /**  
+
+    /**
+     * Filters data with no filtering
      * @param width width of image
      * @param height height of image
+     * @deprecated
      */
     private _filterData(imageData: ImageData) {
         //todo no filter for now        
@@ -100,7 +103,7 @@ export class PngWriter {
         var fromPos = 0;
         for (var i = 0; i < height; i++) {
             filtered[filterTypePos] = filterType; //we need to write one additional byte with filter value each in row at the beginning            
-            PngWriter._copy(data, filtered, filterTypePos + 1, byteWidth, fromPos); // just copy the data without filtering
+            PngWriter.copy(data, filtered, filterTypePos + 1, byteWidth, fromPos); // just copy the data without filtering
             filterTypePos += (byteWidth + 1);
             fromPos += byteWidth;
         }
@@ -114,7 +117,7 @@ export class PngWriter {
         PngWriter._writeAsBigEndian(buf, len, 0);
         PngWriter._writeAsBigEndian(buf, type, 4);
         if (data !== null) {
-            PngWriter._copy(data, buf, 8);
+            PngWriter.copy(data, buf, 8);
         }
         var partWithoutLen = buf.slice(4, buf.length - 4);
 
@@ -129,7 +132,7 @@ export class PngWriter {
         arr[startIndex + 3] = value >>> 0;
     }
 
-    private static _copy(from: Uint8Array | number[], to: Uint8Array, toStartIndex: number, length?: number, fromStartPos?: number) {
+    public static copy(from: Uint8Array | number[], to: Uint8Array, toStartIndex: number, length?: number, fromStartPos?: number) {
         length = (typeof length === 'undefined' || length === null) ? from.length : length;
         fromStartPos = (typeof fromStartPos === 'undefined' || fromStartPos === null) ? 0 : fromStartPos;
         to.set((from as Uint8Array).subarray(fromStartPos, fromStartPos + length), toStartIndex);
