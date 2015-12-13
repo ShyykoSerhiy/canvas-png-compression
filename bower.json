@@ -1,0 +1,26 @@
+{
+  "name": "canvas-png-compression",
+  "version": "0.0.1",
+  "authors": [
+    "Shyyko Serhiy <shyyko.serhiy@gmail.com>"
+  ],
+  "description": "Shim for HTMLCanvasElement.toDataURL() to include compression for png image format.",
+  "main": [
+    "dist/bundle.js"
+  ],
+  "keywords": [
+    "png",
+    "compression",
+    "canvas",
+    "toDataURL"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo"
+  ]
+}
