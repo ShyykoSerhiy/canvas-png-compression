@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../dist/bundle.js"></script>
+    <script>
+        'use strict';        
+        function toDataURL(c, wPrefix, ttPrevifx) {
+            var quality = document.querySelector('#quality').value;
+            var start = new Date();
+            var dataURL = c.toDataURL('image/png', quality);
+            var end = new Date();
+            document.querySelector('#' + wPrefix + 'weight').innerHTML = `${wPrefix} Weight : ${Math.floor(dataURL.length/1024)}kb`;
+            document.querySelector('#' + ttPrevifx + 'timeTaken').innerHTML = `${ttPrevifx} Time taken : ${end - start}`;
+        }
+               
+        function draw(){                                    
+            var c = document.querySelector('#canvas');
+            var ctx = c.getContext('2d');
+            var img = document.getElementById("source");
+            ctx.drawImage(img, 0, 0);  
+            convert();                 
+        }
+        
+        function convert(){
+            var c = document.querySelector('#canvas');
+            CanvasPngCompression.replaceToDataURL();                 
+            toDataURL(c, '', '');    
+            CanvasPngCompression.revertToDataURL();
+            toDataURL(c, 'orig', 'orig');                
+        }
+    </script>
+</head>
+
+<body>
+    <input id="quality" onchange="convert();" style="width:480px;" type="range" min="0" max="1" value="1" step="0.1" />
+    <div id="weight">Weight : </div>
+    <div id="timeTaken">Time taken : </div>
+    <div id="origweight">Weight : </div>
+    <div id="origtimeTaken">Time taken : </div>
+    <img style="display:none;" id="source" onload="draw();" src="temp.png" width="480" height="320">
+    <canvas width="480" height="320" id="canvas"></canvas>
+</body>
+
+</html>
