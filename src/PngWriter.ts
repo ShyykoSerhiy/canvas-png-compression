@@ -130,7 +130,6 @@ export class PngWriter {
     }
 
     private static _copy(from: Uint8Array | number[], to: Uint8Array, toStartIndex: number, length?: number, fromStartPos?: number) {
-        //todo try to use subarray() and set() methods.
         length = (typeof length === 'undefined' || length === null) ? from.length : length;
         fromStartPos = (typeof fromStartPos === 'undefined' || fromStartPos === null) ? 0 : fromStartPos;
         to.set((from as Uint8Array).subarray(fromStartPos, fromStartPos + length), toStartIndex);
