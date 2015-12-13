@@ -68,6 +68,13 @@ CanvasPngCompression.replaceToDataURL({
 });
 ```
 
+# Running demo
+Run
+```sh
+node ./server.js
+```
+then open http://localhost:3000/demo/demo.html
+
 # Acnowledgments 
 I've got my inspiration from:
  * very well written [tiny-png-output-c](http://www.nayuki.io/page/tiny-png-output-c) by @nayuki
