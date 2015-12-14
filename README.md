@@ -3,19 +3,19 @@ Shim for `HTMLCanvasElement.toDataURL()` to include compression for png image fo
 
 This lib provides shim for `HTMLCanvasElement.toDataURL()` when image type is `'image/png'`. It adds ability to 
 provide quality as second parameter to `HTMLCanvasElement.toDataURL()` function. Quality is a Number between 0 and 1 
-indicating image quality if the requested type is `'image/jpeg'` or `'image/webp'`, for the image/png it indicate compression level.
+indicating image quality if the requested type is `'image/jpeg'` or `'image/webp'`, for the image/png it indicates compression level.
 Quality is normalized to compression level of zlib compression from 9 downto 0 (0 => 9, 1 => 0).  
 
 # How it works 
-Canvas-png-compression accesses to raw data of canvas using getImageData method of context. 
-It then [pako](https://github.com/nodeca/pako) to apply zlib conversion to the filtered 
-imageData(one of those filters is used for each row if image Sub, Up, Average, Paeth from 
-[filters spec](ttp://www.w3.org/TR/PNG-Filters.html)). Compressed data is then packed with 
+Canvas-png-compression accesses raw data of canvas using getImageData method of the context.
+It then uses [pako](https://github.com/nodeca/pako) to apply zlib compression to the filtered
+imageData(one of those filters is used for each row of the image: Sub, Up, Average, Paeth
+([filters spec](ttp://www.w3.org/TR/PNG-Filters.html))). Compressed data is then packed with the
 [other chunks](http://www.w3.org/TR/PNG-Chunks.html) into one Uint8Array buffer that represents
-png image. It then is converted using window.btoa to base64 string;
+png image. At last the buffer is converted using window.btoa to base64 string.
 
 #Usage
-Install using bower
+Install via bower
 ```sh
 bower install canvas-png-compression
 ```
@@ -33,7 +33,8 @@ or
 <script src="node_modules/canvas-png-compression/dist/bundle.js"></script>
 ```
  
-Then you can use `CanvasPngCompression.replaceToDataURL();` to replace `HTMLCanvasElement.toDataURL()` with canvas-png-compression implementation.
+Then you'll be able use `CanvasPngCompression.replaceToDataURL();` to replace `HTMLCanvasElement.toDataURL()`
+with canvas-png-compression's implementation.
 ```js
 CanvasPngCompression.replaceToDataURL();
 ``` 
@@ -67,13 +68,16 @@ CanvasPngCompression.replaceToDataURL({
     strategy: 3
 });
 ```
-
 # Running demo
 Run
 ```sh
 node ./server.js
 ```
 then open http://localhost:3000/demo/demo.html
+
+#Compatability
+The library was tested in Chrome, Firefox and Microsoft Edge. Generally yt provides better compression level in Chrome and Microsoft Edge,
+however Firefox generally gives better compression levels via native implementation.
 
 # Acnowledgments 
 I've got my inspiration from:
