@@ -11,10 +11,12 @@ export class PngWriter {
 
     write(imageData: ImageData, options?: PakoOptions) {
         options = options || {};
+        var {colorType} = options;
+        colorType = colorType || 6;
         var parts: Uint8Array[] = [];
         parts.push(new Uint8Array(PngWriter.PNG_SIGNATURE));
-        parts.push(this.writeIHDRChunk(imageData.width, imageData.height));
-        var filtered = filter(imageData);//this._filterData(imageData);
+        parts.push(this.writeIHDRChunk(imageData.width, imageData.height, colorType));
+        var filtered = filter(imageData, colorType);//this._filterData(imageData);
         var compressed = pako.deflate(filtered, Object.assign({
             /**
              * //compression level 0-9
@@ -59,13 +61,14 @@ export class PngWriter {
      * Creates IHDR chunk (image dimensions, color depth, compression method, etc.)
      * @param width of png image
      * @param height of png image
+     * @param color type of image ()
      */
-    private writeIHDRChunk(width: number, height: number): Uint8Array {
+    private writeIHDRChunk(width: number, height: number, colorType: number): Uint8Array {
         var ihdr = new Uint8Array(13);
         PngWriter._writeAsBigEndian(ihdr, width, 0);
         PngWriter._writeAsBigEndian(ihdr, height, 4);
         ihdr[8] = 8;  // Bit depth: 8 bits per sample //todo add this as option maybe (need to recalculate bpp for this)
-        ihdr[9] = 6;  // Color type: 6 = RGBA // todo add this as option maybe (need to recalculate bpp for this)
+        ihdr[9] = colorType;  // Color type: 6 = RGBA // todo add this as option maybe (need to recalculate bpp for this)
         ihdr[10] = 0;  // Compression method: DEFLATE (pako comes handy)
         ihdr[11] = 0;  // Filter method: Adaptive
         ihdr[12] = 0;  // Interlace method: None

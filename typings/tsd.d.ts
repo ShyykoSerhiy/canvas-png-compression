@@ -35,5 +35,6 @@ interface PakoOptions {
     level?: number,
     windowBits?: number,
     chunkSize?: number,
-    strategy?: number
+    strategy?: number,
+    colorType?: number
 }

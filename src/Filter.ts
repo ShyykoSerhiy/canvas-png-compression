@@ -256,9 +256,18 @@ var FILTER_TYPES: {
         }
     ];
 
-export function filter(imageData: ImageData): Uint8Array {
-    const {width, height, data} = imageData;
-    const bpp = 4; //bits per pixel r,g,b,a
+export function filter(imageData: ImageData, colorType: number): Uint8Array {
+    var {width, height} = imageData;
+    var data:number[] | Uint8Array = imageData.data;
+    if (colorType !== 6) {
+        var temp = new Uint8Array(width * 3 * height);
+        for (var fromI=0, toI=0; fromI < data.length; fromI+= 4, toI+=3){
+            PngWriter.copy(data, temp, toI, 3, fromI);
+        }
+        data = temp;
+    }
+
+    const bpp = colorType === 6 ? 4 : 3; //bits per pixel r,g,b,a or r,g,b
     const byteWidth = width * bpp; //r,g,b,a
     var filtered = new Uint8Array((byteWidth + 1) * height);
     var filterTypePos = 0;
